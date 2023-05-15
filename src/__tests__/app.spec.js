@@ -10,24 +10,35 @@ describe("init", () => {
         app = await createServer();
     });
 
-    describe("upload image", () => {
-        const filePath = `${__dirname}/testFiles/Picture16.png`;
-        it('should upload the test file to storage', async () => {
-            const exists = await fs.exists(filePath);
-            if (!exists) throw new Error('file does not exist');
-            const response = await supertest(app).post('/files').attach('file', filePath);
+    describe("Test with image", () => {
 
-            const { publicKey, privateKey } = response?.message;
-            describe("get image from valid public key", () => {
-                it("should return 200", async () => {
-                    return await supertest(app).get(`/files/${publicKey}`).expect(200);
-                });
+        let publicKey;
+        let privateKey;
+
+        describe("upload image", () => {
+            const filePath = `${__dirname}/testFiles/Picture16.png`;
+            it('should return public and private keys', async () => {
+                const exists = await fs.exists(filePath);
+                if (!exists) throw new Error('file does not exist');
+                const response = await supertest(app).post('/files').attach('file', filePath);
+                expect(response?.body?.message?.publicKey).toBeTruthy();
+                expect(response?.body?.message?.privateKey).toBeTruthy();
+                publicKey = response?.body?.message?.publicKey;
+                privateKey = response?.body?.message?.privateKey;
             });
+        })
 
-            describe("delete image with valid private key", () => {
-                it("should return 200", async () => {
-                    return await supertest(app).delete(`/files/${privateKey}`).expect(200);
-                });
+        describe("get image from valid public key", () => {
+            it("should return image in response body", async () => {
+                const response = await supertest(app).get(`/files/${publicKey}`);
+                expect(response?.body).toBeTruthy();
+            });
+        });
+
+        describe("delete image with valid private key", () => {
+            it("should return message 'File deleted successfully.'", async () => {
+                const response = await supertest(app).delete(`/files/${privateKey}`);
+                expect(response?.body?.message).toBe('File deleted successfully.');
             });
         });
     });
@@ -35,14 +46,16 @@ describe("init", () => {
     describe("get image from invalid public key", () => {
         it("should return 500", async () => {
             const publicKey = 'jskjdka';
-            return await supertest(app).get(`/files/${publicKey}`).expect(500);
+            const response = await supertest(app).get(`/files/${publicKey}`);
+            expect(response?.statusCode).toBe(500)
         });
     });
 
     describe("delete image with invalid private key", () => {
         it("should return 500", async () => {
             const privateKey = 'jskjdka';
-            return await supertest(app).delete(`/files/${privateKey}`).expect(500);
+            const response = await supertest(app).delete(`/files/${privateKey}`);
+            expect(response?.statusCode).toBe(500)
         });
     });
 });

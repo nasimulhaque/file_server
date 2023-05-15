@@ -21,7 +21,6 @@ const createDirectory = async () => {
     await storage.createBucket(bucketName); // create bucket if not exists
     return;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -62,9 +61,11 @@ const uploadFile = async (req, res) =>
 // delete file from cloud storage
 const deleteFile = async (file) => {
   try {
-    return await storage.bucket(bucketName).file(file.name).delete();
+    if(!file) {
+      return;
+    }
+    return await storage.bucket(bucketName).file(file?.name).delete();
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
