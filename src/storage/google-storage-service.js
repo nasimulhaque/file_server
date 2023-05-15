@@ -4,8 +4,7 @@ const https = require("https");
 const { Storage } = require("@google-cloud/storage");
 
 const storage = new Storage({
-  keyFilename: configFilePath,
-  projectId: "database-test-database",
+  keyFilename: configFilePath
 });
 
 const bucketName = process.env.FOLDER;
