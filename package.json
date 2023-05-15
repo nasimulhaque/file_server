@@ -2,15 +2,19 @@
   "author": "Nasimul Haque Robin",
   "description": "This application is a REST API server. It has only three endpoints, get, post and delete.",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "test": "jest"
   },
   "dependencies": {
     "@google-cloud/storage": "^6.10.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jest": "^29.5.0",
     "multer": "^1.4.5-lts.1",
+    "mz": "^2.7.0",
     "rimraf": "^5.0.0",
     "sqlite3": "^5.1.6",
+    "supertest": "^6.3.3",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
