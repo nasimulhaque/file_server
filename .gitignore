@@ -1,0 +1,14 @@
+#config
+src/config/
+
+#file upload root folder
+buckets/
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/
+
+# Dependency directories
+node_modules/
+
+# dotenv environment variable files
+.env
